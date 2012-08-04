@@ -1,6 +1,6 @@
 __import__('pkg_resources').declare_namespace(__name__)
 
-import isodate, re, os
+import isodate, os
 import lxml.etree
 
 
@@ -8,6 +8,7 @@ class ParseError(Exception):
     def __init__(self, message, sourceline=None):
         Exception.__init__(self, message)
         self.sourceline = sourceline
+
 
 class Parser(object):
     def __init__(self, tree, formats=None, strict=False, collect_errors=False):
@@ -25,7 +26,9 @@ class Parser(object):
 
     def parse_format(self, mf, root=None):
         root = root if root is not None else self.root
-        format = self.formats.xpath('/microformats/*[@name="%s"] | /microformats/%s' % (mf, mf))
+        format = self.formats.xpath(
+            '/microformats/*[@name="%s"] | /microformats/%s' % (mf, mf)
+        )
         if not format:
             return None
         else:
@@ -59,7 +62,7 @@ class Parser(object):
             prop_couldbe = prop.attrib['couldbe'].split('|') if 'couldbe' in prop.attrib else []
             prop_values = set(prop.attrib['values'].split(',')) if 'values' in prop.attrib else None
             prop_separator = prop.attrib['separator'] if 'separator' in prop.attrib else ""
-            
+
             # Select all properties, but exclude nested properties
             prop_expr = 'descendant-or-self::*[contains(concat(" ", normalize-space(@%s), " "), " %s ")]' % (prop_attr, prop_name)
             parent_expr = 'ancestor::*[contains(concat(" ", normalize-space(@class), " "), " %s ")]' % format.tag
@@ -214,7 +217,7 @@ class Parser(object):
         for node in value_title_nodes:
             if 'title' in node.attrib:
                 result.append(node.attrib['title'])
-                
+
         for node in value_nodes:
             if node.tag.lower() == 'img':
                 if 'alt' in node.attrib:
@@ -223,10 +226,10 @@ class Parser(object):
             elif node.tag.lower() == 'abbr':
                 if 'title' in node.attrib:
                     result.append(node.attrib['title'])
-                    
+
             else:
                 result.append(self._parse_text(node))
-        
+
         return "".join(result)
 
     def _parse_text(self, node):

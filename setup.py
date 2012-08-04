@@ -1,9 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""Python microformats parser"""
-
-
 try:
     from setuptools import setup, find_packages
 except ImportError:
@@ -21,9 +17,6 @@ Programming Language :: Python
 Topic :: Software Development :: Libraries :: Python Modules
 """
 
-doc_lines = __doc__.split('\n')
-
-
 setup(
     name='Microtron',
     version='0.16',
@@ -32,12 +25,16 @@ setup(
     author_email='amccollum@gmail.com',
     license='MIT',
     url='http://github.com/amccollum/microtron',
-
-    install_requires = [
+    install_requires=[
         'lxml >= 2.2.2',
         'isodate >= 0.4.0',
-        ],
-    package_data = {'': ['*.xml']},
-    packages = find_packages(exclude=['ez_setup']),
-    zip_safe = False,
-    )
+    ],
+    package_data={'': ['*.xml']},
+    packages=find_packages(exclude=['ez_setup']),
+    zip_safe=False,
+    entry_points="""
+    [console_scripts]
+    microtron-parse = microtron.scripts:parse
+    microtron-check = microtron.scripts:check
+    """,
+)
